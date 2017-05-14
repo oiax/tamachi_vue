@@ -25,3 +25,4 @@ tamachi-vue CHANGELOG
 * `Gemfile` から `turbolinks` を削除して `bundle install`
 * `app/assets/javascripts/application.js` から `//= require turbolinks` を削除
 * `app/views/layouts/application.html.erb` から Turbolinks 関連の記述を削除
+* `users/form.js` を document.querySelector でデータ初期化するように書き換え

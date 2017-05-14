@@ -3,13 +3,18 @@ import Vue from 'vue/dist/vue.esm'
 Vue.config.productionTip = false
 
 document.addEventListener("DOMContentLoaded", () => {
-  const app = new Vue({
+  const language = document.querySelector("[v-model='user.language']:checked")
+
+  new Vue({
     el: "#user-form",
-    data: {
-      user: {
-        name: "",
-        language: undefined,
-        other_language: ""
+    data: function () {
+      return {
+        user: {
+          name: document.querySelector("[v-model='user.name']").value,
+          language: language ? language.value : undefined,
+          other_language: document
+            .querySelector("[v-model='user.other_language']").value
+        }
       }
     }
   })
