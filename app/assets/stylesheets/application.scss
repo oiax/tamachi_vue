@@ -1,2 +1,27 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
+@import "font-awesome";
+
+body {
+  padding: 1rem;
+}
+
+div.page-header {
+  border-color: gray;
+}
+
+div.panel-default {
+  border-color: gray;
+}
+
+div.field_with_errors {
+  display: inline;
+
+  label {
+    color: red;
+  }
+
+  input {
+    background-color: pink;
+  }
+}
