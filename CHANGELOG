@@ -9,3 +9,6 @@ tamachi-vue CHANGELOG
 * `touch app/javascript/packs/.keep`
 * `rm app/javascript/packs/app.vue`
 * `rm app/javascript/packs/*.js`
+* `Gemfile` から `jquery-rails` を削除して `bundle install`
+* `app/assets/javascripts/application.js` から `//= require jquery` を削除
+* `app/assets/javascripts/users.js` を削除
