@@ -1,24 +1,18 @@
-# README
+tamachi-vue
+===========
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Vue.js と Rails 5.1 を組み合わせた Web アプリケーションのデモ
 
-Things you may want to cover:
+## インストール方法
 
-* Ruby version
+```bash
+git clone https://github.com/oiax/tamachi-vue.git
+cd vue-rails-demo
+bundle
+yarn
+bin/rake db:setup
+```
 
-* System dependencies
+## ライセンス
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+The `tamachi-vue` is distributed under the [MIT license](LICENSE).
