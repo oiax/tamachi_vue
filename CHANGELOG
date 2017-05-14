@@ -27,3 +27,7 @@ tamachi-vue CHANGELOG
 * `app/views/layouts/application.html.erb` から Turbolinks 関連の記述を削除
 * `users/form.js` を document.querySelector でデータ初期化するように書き換え
 * `<div v-cloak>...</div>` でフォームを囲む
+
+ここでタグ `ver1` をセット。
+
+## `yarn add vue-data-scooper`
