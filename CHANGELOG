@@ -5,3 +5,4 @@ tamachi-vue CHANGELOG
 
 * `Gemfile` に `webpacker` を追加して `bundle install`
 * `rails webpacker:install`
+* `rails webpacker:install:vue`
