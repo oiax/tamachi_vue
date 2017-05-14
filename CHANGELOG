@@ -6,3 +6,6 @@ tamachi-vue CHANGELOG
 * `Gemfile` に `webpacker` を追加して `bundle install`
 * `rails webpacker:install`
 * `rails webpacker:install:vue`
+* `touch app/javascript/packs/.keep`
+* `rm app/javascript/packs/app.vue`
+* `rm app/javascript/packs/*.js`
