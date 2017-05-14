@@ -25,7 +25,10 @@ module TamachiVue
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    # Don't generate system test files.
-    config.generators.system_tests = nil
+    config.generators do |g|
+      g.helper false
+      g.assets false
+      g.skip_routes true
+    end
   end
 end
