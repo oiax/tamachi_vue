@@ -3,12 +3,22 @@ tamachi-vue CHANGELOG
 
 以下、Git のタグ `ver0` からの変更を記録する。
 
+## Webpacker, Vue.js の導入
+
 * `Gemfile` に `webpacker` を追加して `bundle install`
 * `rails webpacker:install`
 * `rails webpacker:install:vue`
 * `touch app/javascript/packs/.keep`
 * `rm app/javascript/packs/app.vue`
 * `rm app/javascript/packs/*.js`
+
+## jQuery の除去
+
 * `Gemfile` から `jquery-rails` を削除して `bundle install`
 * `app/assets/javascripts/application.js` から `//= require jquery` を削除
 * `app/assets/javascripts/users.js` を削除
+
+## `users/form.js` の作成
+
+* `mkdir -p app/javascript/packs/users`
+* `app/javascript/packs/users/form.js` を作成
