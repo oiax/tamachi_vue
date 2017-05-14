@@ -4,10 +4,12 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    <%= form_with model: @user, id: "user-form", local: true do |f| %>
-      <%= render "fields", f: f %>
-      <%= f.submit "更新", class: "btn btn-primary" %>
-    <% end %>
+    <div id="user-form" v-cloak>
+      <%= form_with model: @user, local: true do |f| %>
+        <%= render "fields", f: f %>
+        <%= f.submit "更新", class: "btn btn-primary" %>
+      <% end %>
+    </div>
   </div>
 </div>
 
