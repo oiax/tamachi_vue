@@ -2,6 +2,10 @@
   <h1>ユーザーリスト</h1>
 </div>
 
+<div style="text-align: right; margin-bottom: 1rem">
+  <%= link_to "新規ユーザー登録", :new_user, class: "btn btn-default" %>
+</div>
+
 <div class="panel panel-default">
   <div class="panel-body">
     <table class="table" style="margin: 0">
@@ -17,7 +21,9 @@
         <tr>
           <td><%= user.name %></td>
           <td><%= user.language_for_display %></td>
-          <td></td>
+          <td>
+            <%= link_to "編集", [ :edit, user ], class: "btn btn-default btn-sm" %>
+          </td>
         </tr>
         <% end %>
       </tbody>

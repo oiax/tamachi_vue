@@ -1,0 +1,23 @@
+<div class="form-group">
+  <%= f.label :name, "お名前" %>
+  <%= f.text_field :name, class: "form-control", style: "width: 300px" %>
+</div>
+<div class="form-group">
+  <%= f.label :language, "もっとも得意なプログラミング言語" %>
+  <div>
+    <label>
+      <%= f.radio_button :language, "ruby" %> Ruby
+    </label>
+    <label>
+      <%= f.radio_button :language, "php" %> PHP
+    </label>
+    <label>
+      <%= f.radio_button :language, "other" %> その他
+    </label>
+  </div>
+</div>
+<div class="form-group">
+  <%= f.label :other_language, "（具体的に）" %>
+  <%= f.text_field :other_language,
+    style: "display: inline; width: auto", class: "form-control" %>
+</div>
