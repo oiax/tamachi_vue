@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h1>ユーザーリスト</h1>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <table class="table" style="margin: 0">
+      <thead>
+        <tr>
+          <th>名前</th>
+          <th>得意なプログラミング言語</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.language_for_display %></td>
+          <td></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
