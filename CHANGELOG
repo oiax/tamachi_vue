@@ -39,4 +39,9 @@ tamachi-vue CHANGELOG
 * `form_with` を `vue_form_with` で置換
 * `v-model` 属性を除去
 
-ここでタグ `ver3` をセット。完成。
+ここでタグ `ver3` をセット。
+
+* `app/initializers/action_view.rb` を追加。
+* `vue_form_with` から `local: true` オプションを除去。
+
+ここでタグ `ver4` をセット。完成。
