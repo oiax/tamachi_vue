@@ -5,22 +5,19 @@
         :class="{'has-error': hasErrorOn('name')}">
         <label for="user_name" class="control-label">お名前</label>
         <input class="form-control" style="width: 300px" v-model="user.name"
-          type="text" name="user[name]">
+          type="text" id="user_name">
       </div>
       <div class="form-group">
         <label for="user_language">もっとも得意なプログラミング言語</label>
         <div>
           <label>
-            <input v-model="user.language" type="radio" value="ruby"
-              name="user[language]"> Ruby
+            <input v-model="user.language" type="radio" value="ruby"> Ruby
           </label>
           <label>
-            <input v-model="user.language" type="radio" value="php"
-              name="user[language]"> PHP
+            <input v-model="user.language" type="radio" value="php"> PHP
           </label>
           <label>
-            <input v-model="user.language" type="radio" value="other"
-              name="user[language]"> その他
+            <input v-model="user.language" type="radio" value="other"> その他
           </label>
         </div>
       </div>
@@ -28,7 +25,7 @@
         :class="{'has-error': hasErrorOn('other_language')}">
         <label for="user_other_language" class="control-label">（具体的に）</label>
         <input style="display: inline; width: auto" class="form-control"
-          v-model="user.other_language" type="text" name="user[other_language]">
+          v-model="user.other_language" type="text" id="user_other_language">
       </div>
 
       <span class="btn btn-primary" @click="submit()">{{buttonLabel}}</span>
