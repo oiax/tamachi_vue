@@ -29,7 +29,7 @@
           v-model="user.other_language" type="text" name="user[other_language]">
       </div>
 
-      <input type="submit" name="commit" value="登録" class="btn btn-primary">
+      <span class="btn btn-primary">{{buttonLabel}}</span>
     </form>
   </div>
 </template>
@@ -41,8 +41,20 @@ module.exports = {
       user: {
         name: "",
         language: "",
-        other_language: ""
+        other_language: "",
+        id: undefined
       }
+    }
+  },
+  mounted: function() {
+    const md = window.location.pathname.match(/\/users\/(\d+)\/edit/)
+    if (md) {
+      this.user.id = md[1]
+    }
+  },
+  computed: {
+    buttonLabel: function() {
+      return this.user.id ? "更新" : "登録"
     }
   }
 }
