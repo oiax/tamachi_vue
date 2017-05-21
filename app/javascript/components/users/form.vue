@@ -49,7 +49,15 @@ module.exports = {
   mounted: function() {
     const md = window.location.pathname.match(/\/users\/(\d+)\/edit/)
     if (md) {
+      let _this = this
       this.user.id = md[1]
+      this.$axios.get(`/users/${this.user.id}`)
+        .then(function(response) {
+          _this.user = response.data
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
     }
   },
   computed: {

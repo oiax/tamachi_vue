@@ -3,12 +3,16 @@ class UsersController < ApplicationController
     @users = User.order(:id)
   end
 
+  # XHR
+  def show
+    render json: User.find(params[:id]).to_json(
+      only: [ :name, :language, :other_language ])
+  end
+
   def new
-    @user = User.new
   end
 
   def edit
-    @user = User.find(params[:id])
   end
 
   def create
