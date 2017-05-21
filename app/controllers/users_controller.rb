@@ -16,21 +16,21 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      redirect_to action: "index"
+    user = User.new(user_params)
+    if user.save
+      render json: { result: "OK" }
     else
-      render action: "new"
+      render json: { errors: user.errors.to_hash }
     end
   end
 
   def update
-    @user = User.find(params[:id])
-    @user.assign_attributes(user_params)
-    if @user.save
-      redirect_to action: "index"
+    user = User.find(params[:id])
+    user.assign_attributes(user_params)
+    if user.save
+      render json: { result: "OK" }
     else
-      render action: "edit"
+      render json: { errors: user.errors.to_hash }
     end
   end
 

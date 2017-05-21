@@ -1,8 +1,9 @@
 <template>
   <div id="user-form" v-cloak>
     <form>
-      <div class="form-group">
-        <label for="user_name">お名前</label>
+      <div class="form-group"
+        :class="{'has-error': hasErrorOn('name')}">
+        <label for="user_name" class="control-label">お名前</label>
         <input class="form-control" style="width: 300px" v-model="user.name"
           type="text" name="user[name]">
       </div>
@@ -23,13 +24,14 @@
           </label>
         </div>
       </div>
-      <div class="form-group" v-show="user.language === 'other'">
-        <label for="user_other_language">（具体的に）</label>
+      <div class="form-group" v-show="user.language === 'other'"
+        :class="{'has-error': hasErrorOn('other_language')}">
+        <label for="user_other_language" class="control-label">（具体的に）</label>
         <input style="display: inline; width: auto" class="form-control"
           v-model="user.other_language" type="text" name="user[other_language]">
       </div>
 
-      <span class="btn btn-primary">{{buttonLabel}}</span>
+      <span class="btn btn-primary" @click="submit()">{{buttonLabel}}</span>
     </form>
   </div>
 </template>
@@ -38,20 +40,21 @@
 module.exports = {
   data: function() {
     return {
+      user_id: undefined,
       user: {
         name: "",
         language: "",
-        other_language: "",
-        id: undefined
-      }
+        other_language: ""
+      },
+      errors: {}
     }
   },
   mounted: function() {
     const md = window.location.pathname.match(/\/users\/(\d+)\/edit/)
     if (md) {
       let _this = this
-      this.user.id = md[1]
-      this.$axios.get(`/users/${this.user.id}`)
+      this.user_id = md[1]
+      this.$axios.get(`/users/${this.user_id}`)
         .then(function(response) {
           _this.user = response.data
         })
@@ -62,7 +65,37 @@ module.exports = {
   },
   computed: {
     buttonLabel: function() {
-      return this.user.id ? "更新" : "登録"
+      return this.user_id ? "更新" : "登録"
+    }
+  },
+  methods: {
+    submit: function() {
+      let _this = this
+      let handler = function(response) {
+        if (response.data.result === "OK") {
+          window.location.pathname = "/users"
+        }
+        else {
+          _this.errors = response.data.errors
+        }
+      }
+      if (this.user_id) {
+        this.$axios.patch(`/users/${_this.user_id}`, _this.user)
+          .then(handler)
+          .catch(function(error) {
+            console.log(error)
+          })
+      }
+      else {
+        this.$axios.post("/users", this.user)
+          .then(handler)
+          .catch(function(error) {
+            console.log(error)
+          })
+      }
+    },
+    hasErrorOn: function(field) {
+      return this.errors[field] && this.errors[field].length > 0
     }
   }
 }
