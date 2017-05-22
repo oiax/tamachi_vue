@@ -1,4 +1,4 @@
-tamachi-vue CHANGELOG
+tamachi_vue CHANGELOG
 =====================
 
 以下、Git のタグ `ver0` からの変更を記録する。

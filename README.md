@@ -1,4 +1,4 @@
-tamachi-vue
+tamachi_vue
 ===========
 
 Vue.js と Rails 5.1 を組み合わせた Web アプリケーションのデモ
@@ -6,8 +6,8 @@ Vue.js と Rails 5.1 を組み合わせた Web アプリケーションのデモ
 ## インストール方法
 
 ```bash
-git clone https://github.com/oiax/tamachi-vue.git
-cd vue-rails-demo
+git clone https://github.com/oiax/tamachi_vue.git
+cd tamachi_vue
 bundle
 yarn
 bin/rake db:setup
@@ -15,4 +15,4 @@ bin/rake db:setup
 
 ## ライセンス
 
-The `tamachi-vue` is distributed under the [MIT license](LICENSE).
+The `tamachi_vue` is distributed under the [MIT license](LICENSE).
