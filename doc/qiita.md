@@ -165,11 +165,16 @@ document.addEventListener("DOMContentLoaded", () => {
 import Vue from "vue/dist/vue.esm"
 
 document.addEventListener("DOMContentLoaded", () => {
+  const language = document.querySelector("[v-model='user.language']:checked")
+
   new Vue({
     el: "#user-form",
     data: {
       user: {
-        name: document.querySelector("[v-model='user.name']").value
+        name: document.querySelector("[v-model='user.name']").value,
+        language: language ? language.value : undefined,
+        other_language: document
+          .querySelector("[v-model='user.other_language']").value
       }
     }
   })
@@ -201,43 +206,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 以上で、Rails 側の ERB テンプレートを大きく変更せずに jQuery ベースのコードを Vue.js で書き換える道が開けました。
 
-例えば、ヘルパーメソッド `form_for` を用いて HTML フォームを生成しているのなら、次のように書けます。
-
-```erb
-<%= form_for @user do |f| %>
-  <%= f.label :name, "お名前" %>
-  <%= f.text_field :name, "v-model" => "user.name" %>
-  <%= f.submit "登録" %>
-<% end %>
-```
-
-フォームビルダーの `text_field` メソッドに `v-model` オプションを指定すれば、`v-model` 属性のついた `input` 要素が生成されます。
-
 しかし、筆者はもう少し Rails 側の修正量を減らしたいと考え、勝手に `v-model` 属性をセットしてくれる Gem パッケージ [vue-rails-form-builder](https://rubygems.org/gems/vue-rails-form-builder) を作りました。
 
 `Gemfile` に `gem "vue-rails-form-builder"` という記述を加えて、`bundle install` してください。
 
-すると、さきほどの例は次のように書き換えられます。
+すると、`form_for` の代わりとなる `vue_form_for` と `form_with` の代わりとなる `vue_form_with` というふたつのヘルパーメソッドが ERB テンプレート内で使えるようになり、`name` 属性の値から `v-model` 属性に値が自動的にセットされるようになります。
+
+したがって、さきほどの例は次のように書き換えられます。
 
 ```erb
-<%= vue_form_for @user do |f| %>
-  <%= f.label :name, "お名前" %>
+<%= vue_form_for @user, html: { id: "user-form" } do |f| %>
   <%= f.text_field :name %>
+  <%= f.radio_button :language, "ruby" %>
+  <%= f.radio_button :language, "php" %>
+  <%= f.radio_button :language, "other" %>
+  <div v-show="user.language === 'other'">
+    <%= f.text_field :other_language %>
+  </div>
   <%= f.submit "登録" %>
 <% end %>
 ```
 
-`form_for` の代わりとなる `vue_form_for` と `form_with` の代わりとなる `vue_form_with` というふたつのヘルパーメソッドが ERB テンプレート内で使えるようになります。
-
 ## おわりに
 
-以上で紹介した手法は、あくまで「伝統的な Rails + jQuery ベースの Web アプリケーション」を「Rails + Vue.js ベースの Web アプリケーション」に書き換えたいという状況を想定しています。
+以上で紹介した手法は、あくまで「伝統的な Rails + jQuery ベースの Web アプリケーション」をあまり手間を掛けずに「Rails + Vue.js ベースの Web アプリケーション」に書き換えたいという状況を想定しています。
 
 いわゆる「シングル・ページ・アプリケーション（SPA）」ではなく、ユーザーがフォームを送信した後でページ遷移が発生するタイプの Web アプリケーションです。
 
-SPA を作りたいのであれば、おそらくは Vue コンポーネントのデータを Ajax 呼び出しで初期化することになります。もちろん、フォームデータの送信も Ajax で行うことになります。それぞれの Ajax 呼び出しを受ける API も用意しなければならないので、コード記述量はかなりのものになるでしょう。
+SPA を作りたいのであれば、おそらくは Vue コンポーネントのデータを Ajax 呼び出しで初期化することになります。もちろん、フォームデータの送信も Ajax で行うことになります。それぞれの Ajax 呼び出しを受ける API も用意しなければならないので、コード記述量はかなりのものになります。
 
-アプリケーションの仕様が SPA であることを要求するのであれば仕方がありませんし、SPA であることが UX を大きく向上させるのであれば果敢に挑戦すべきでしょう。しかし、jQuery による複雑な DOM 操作をやめたい、Rails アプリケーションの保守性を上げたいというのがメインの課題であるのなら、本稿で説明したような手法が効果的かもしれません。
+アプリケーションの仕様が SPA であることを要求するのであれば仕方がありませんし、SPA であることが UX を大きく向上させるのであれば果敢に挑戦すべきでしょう。
+
+しかし、jQuery による複雑な DOM 操作をやめたい、Rails アプリケーションの保守性を上げたい、というのがメインの課題であるのなら、本稿で説明したような手法が効果的かもしれません。
 
 ## 補足
 
@@ -246,3 +246,5 @@ SPA を作りたいのであれば、おそらくは Vue コンポーネント�
 本稿で紹介した手法を用いて作られた Rails アプリケーションのソースコードは、https://github.com/oiax/tamachi_vue で公開されています。ソースコードにはいくつかのタグが設定されています。最初の [ver0](https://github.com/oiax/tamachi_vue/tree/ver0) は、jQuery ベースで構築されています。
 
 ここから [ver1](https://github.com/oiax/tamachi_vue/tree/ver1), [ver2](https://github.com/oiax/tamachi_vue/tree/ver2), [ver3](https://github.com/oiax/tamachi_vue/tree/ver3), [ver4](https://github.com/oiax/tamachi_vue/tree/ver4) とソースコードの変化を追いかければ、本稿の内容をより深く理解できるでしょう。
+
+なお、ブランチ [sfc](https://github.com/oiax/tamachi_vue/tree/sfc) では、Vue.js の「単一ファイルコンポーネント（single file component）」を用いた実装を行っています。こちらのブランチでは、Rails フォームビルダーの利用をやめて Vue.js 側でフォームのためのテンプレートを用意しています。[axios](https://www.npmjs.com/package/axios) を用いた Ajax 呼び出しによって Vue コンポーネントのデータを初期化する処理の実装例にもなっていますので、ぜひ参考にしてください。
