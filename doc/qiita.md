@@ -74,6 +74,8 @@ HTML の標準に `v-model` という名前の属性はありません。`v-` �
 ここで、ひとつ重要なことがあります。この**双方向データバインディング**を利用するためには、`Vue` コンストラクタ関数で `data` オプションを指定し、コンポーネントのデータを初期化する必要がある、ということです。つまり、さきほどの JavaScript コードを次のように書き換えなければなりません。
 
 ```javascript
+import Vue from "vue/dist/vue.esm"
+
 document.addEventListener("DOMContentLoaded", () => {
   new Vue({
     el: "#user-form",
@@ -85,3 +87,87 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 ```
+
+## DOM ツリーからフォーム要素の値を拾う
+
+ここまで述べたように、Vue.js は HTML 文書の一部分をテンプレートとして利用できるのですが、（筆者としては）残念なことに、フォーム要素に含まれる `value`、`checked`、`selected` などの属性を無視します。つまり、サーバー側で生成されたフォームには値が含まれていても、Vue.js によって再描画されると全部消えてしまうのです。
+
+実は、Vue.js Version 1 まではそうではありませんでした。Vue.js 2 での[変更点](https://jp.vuejs.org/v2/guide/migration.html#v-model-においてのインライン-value-削除)のひとつです。
+
+しかし、Vue インスタンスが生成される時点では、もともとの DOM ツリーはそのまま存在していますので、`v-model` 属性を持つ要素の `value` 属性等を調べれば、フォーム要素の値を拾い上げることが可能です。
+
+```javascript
+import Vue from "vue/dist/vue.esm"
+
+document.addEventListener("DOMContentLoaded", () => {
+  new Vue({
+    el: "#user-form",
+    data: {
+      user: {
+        name: document.querySelector("[v-model='user.name']").value
+      }
+    }
+  })
+})
+```
+
+## `vue-data-scooper` プラグイン
+
+もちろん、部品を多く含むフォームの場合、ひとつひとつ値を拾い上げていくのは煩雑です。そこで、筆者は汎用的な Vue プラグイン [vue-data-scooper](https://www.npmjs.com/package/vue-data-scooper) を作成しました。
+
+使い方はとても簡単です。Webpacker を使っているのであれば、まず `yarn add vue-data-scooper` でインストールしてください。そして、Vue インスタンスを生成している JavaScript コードを次のように書き換えます。
+
+```javascript
+import Vue from "vue/dist/vue.esm"
+import VueDataScooper from "vue-data-scooper"
+
+Vue.use(VueDataScooper)
+
+document.addEventListener("DOMContentLoaded", () => {
+  new Vue({
+    el: "#user-form"
+  })
+})
+```
+
+## Gem パッケージ `vue-rails-form-builder`
+
+以上で、Rails 側の ERB テンプレートを大きく変更せずに jQuery ベースのコードを Vue.js で書き換える道が開けました。
+
+例えば、ヘルパーメソッド `form_for` を用いて HTML フォームを生成しているのなら、次のように書けます。
+
+```erb
+<%= form_for @user do |f| %>
+  <%= f.label :name, "お名前" %>
+  <%= f.text_field :name, "v-model" => "user.name" %>
+  <%= f.submit "登録" %>
+<% end %>
+```
+
+フォームビルダーの `text_field` メソッドに `v-model` オプションを指定すれば、`v-model` 属性のついた `input` 要素が生成されます。
+
+しかし、筆者はもう少し Rails 側の修正量を減らしたいと考え、勝手に `v-model` 属性をセットしてくれる Gem パッケージ [vue-rails-form-builder](https://rubygems.org/gems/vue-rails-form-builder) を作りました。
+
+`Gemfile` に `gem "vue-rails-form-builder"` という記述を加えて、`bundle install` してください。
+
+すると、さきほどの例は次のように書き換えられます。
+
+```erb
+<%= vue_form_for @user do |f| %>
+  <%= f.label :name, "お名前" %>
+  <%= f.text_field :name %>
+  <%= f.submit "登録" %>
+<% end %>
+```
+
+`form_for` の代わりとなる `vue_form_for` と `form_with` の代わりとなる `vue_form_with` というふたつのヘルパーメソッドが ERB テンプレート内で使えるようになります。
+
+## おわりに
+
+以上で紹介した手法は、あくまで「伝統的な Rails + jQuery ベースの Web アプリケーション」を「Rails + Vue.js ベースの Web アプリケーション」に書き換えたいという状況を想定しています。
+
+いわゆる「シングル・ページ・アプリケーション（SPA）」ではなく、ユーザーがフォームを送信した後でページ遷移が発生するタイプの Web アプリケーションです。
+
+SPA を作りたいのであれば、おそらくは Vue コンポーネントのデータを Ajax 呼び出しで初期化することになります。もちろん、フォームデータの送信も Ajax で行うことになります。それぞれの Ajax 呼び出しを受ける API も用意しなければならないので、コード記述量はかなりのものになるでしょう。
+
+アプリケーションの仕様が SPA であることを要求するのであれば仕方がありませんし、SPA であることが UX を大きく向上させるのであれば果敢に挑戦すべきでしょう。しかし、jQuery による複雑な DOM 操作をやめたい、Rails アプリケーションの保守性を上げたいというのがメインの課題であるのなら、本稿で説明したような手法が効果的かもしれません。
