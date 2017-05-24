@@ -35,7 +35,7 @@ Vue.js の特徴のひとつは、サーバー側で生成された HTML 文書�
 例えば、ある HTML 文書に次のような断片が含まれていたとします。
 
 ```html
-<form class="new_user" id="user-form" action="/users" method="post">
+<form id="user-form" action="/users" method="post">
   <input v-model="user.name" type="text" name="user[name]" id="user_name">
   <input type="submit" name="commit" value="Create">
 </form>
@@ -88,11 +88,76 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 ```
 
+## `v-show` ディレクティブ
+
+では、ラジオボタンの選択状態によってテキストフィールドの表示・非表示を切り替える UI を Vue.js を用いて実現してみましょう。
+
+まず、HTML のコードはこうなります。わかりやすくするため、ラベルを除くなどの簡略化を行っています。
+
+```html
+<form id="user-form" action="/users" method="post">
+  <input v-model="user.name" type="text" name="user[name]" id="user_name">
+  <input v-model="user.language" type="radio" value="ruby" name="user[language]">
+  <input v-model="user.language" type="radio" value="php" name="user[language]">
+  <input v-model="user.language" type="radio" value="other" name="user[language]">
+  <div v-show="user.language === 'other'">
+    <input v-model="user.other_language" type="text" name="user[other_language]">
+  </div>
+  <input type="submit" name="commit" value="Create">
+</form>
+```
+
+注目すべきは、6 行目にある `v-show` ディレクティブです。このディレクティブに指定された文字列は JavaScrpt コードとして評価され、それが「真（truthy）」であるかどうかで、この要素の表示・非表示が決まります。ここでは `user.language` の値が `'other'` と等しい場合にのみ、この `div` 要素が表示されます。
+
+そして、JavaScript のコードはこうなります。
+
+```javascript
+import Vue from "vue/dist/vue.esm"
+
+document.addEventListener("DOMContentLoaded", () => {
+  new Vue({
+    el: "#user-form",
+    data: {
+      user: {
+        name: "",
+        language: undefined,
+        other_language: ""
+      }
+    }
+  })
+})
+```
+
+これらの変更により、もともと jQuery で実現されていた UI が Vue.js ベースで動くようになりました。JavaScript コードの中にイベントを扱っている部分がありませんね。この点がとても重要です。Vue.js の開発でもイベントを扱う必要は出てくるのですが、頻度は格段に減ります。
+
+## Rails のフォームビルダーを使う
+
+次に、さきほどの HTML 断片のコードを Rails のフォームビルダーに生成させてみましょう。次のように書き換えます。
+
+```erb
+<%= form_for @user, html: { id: "user-form" } do |f| %>
+  <%= f.text_field :name, "v-model" => "user.name" %>
+  <%= f.radio_button :language, "ruby", "v-model" => "user.language" %>
+  <%= f.radio_button :language, "php", "v-model" => "user.language" %>
+  <%= f.radio_button :language, "other", "v-model" => "user.language" %>
+  <div v-show="user.language === 'other'">
+    <%= f.text_field :other_language, "v-model" => "user.other_language" %>
+  </div>
+  <%= f.submit "登録" %>
+<% end %>
+```
+
+フォームビルダーの `text_field` メソッドや `radio_button` メソッドに `v-model` オプションを加えています。オプション名にダッシュ記号（`-`）が含まれているので `=>` 記号を使う必要があります。
+
+この `form_for` メソッドによって生成される `form` 要素の `id` 属性には `user-form` という値がセットされているので、この `form` 要素のコード全体が Vue コンポーネントのテンプレートとして使われることになります。
+
 ## DOM ツリーからフォーム要素の値を拾う
 
-ここまで述べたように、Vue.js は HTML 文書の一部分をテンプレートとして利用できるのですが、（筆者としては）残念なことに、フォーム要素に含まれる `value`、`checked`、`selected` などの属性を無視します。つまり、サーバー側で生成されたフォームには値が含まれていても、Vue.js によって再描画されると全部消えてしまうのです。
+ここからが本題です。
 
-実は、Vue.js Version 1 まではそうではありませんでした。Vue.js 2 での[変更点](https://jp.vuejs.org/v2/guide/migration.html#v-model-においてのインライン-value-削除)のひとつです。
+ここまで説明してきたように Vue.js は HTML 文書の一部分をテンプレートとして利用できるのですが、（筆者としては）残念なことに、フォーム要素に含まれる `value`、`checked`、`selected` などの属性を無視します。つまり、サーバー側で生成されたフォームには値が含まれていても、Vue.js によって再描画されると全部消えてしまうのです。
+
+実は、Vue.js 1 ではそうではありませんでした。Vue.js 2 での[変更点](https://jp.vuejs.org/v2/guide/migration.html#v-model-においてのインライン-value-削除)のひとつです。
 
 しかし、Vue インスタンスが生成される時点では、もともとの DOM ツリーはそのまま存在していますので、`v-model` 属性を持つ要素の `value` 属性等を調べれば、フォーム要素の値を拾い上げることが可能です。
 
@@ -110,6 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 ```
+
+`document.querySelector` は CSS セレクタを引数に取り、合致する最初の HTML 要素を返します。
 
 ## `vue-data-scooper` プラグイン
 
