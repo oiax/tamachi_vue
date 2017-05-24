@@ -238,3 +238,11 @@ document.addEventListener("DOMContentLoaded", () => {
 SPA を作りたいのであれば、おそらくは Vue コンポーネントのデータを Ajax 呼び出しで初期化することになります。もちろん、フォームデータの送信も Ajax で行うことになります。それぞれの Ajax 呼び出しを受ける API も用意しなければならないので、コード記述量はかなりのものになるでしょう。
 
 アプリケーションの仕様が SPA であることを要求するのであれば仕方がありませんし、SPA であることが UX を大きく向上させるのであれば果敢に挑戦すべきでしょう。しかし、jQuery による複雑な DOM 操作をやめたい、Rails アプリケーションの保守性を上げたいというのがメインの課題であるのなら、本稿で説明したような手法が効果的かもしれません。
+
+## 補足
+
+本稿は、2017年5月22日に[株式会社オイアクス](https://www.oiax.co.jp/)主催のイベント「[Rails 5.1 + Webpacker + Vue.js 入門](https://connpass.com/event/55948/)」で筆者がお話した内容がベースになっています。
+
+本稿で紹介した手法を用いて作られた Rails アプリケーションのソースコードは、https://github.com/oiax/tamachi_vue で公開されています。ソースコードにはいくつかのタグが設定されています。最初の [ver0](https://github.com/oiax/tamachi_vue/tree/ver0) は、jQuery ベースで構築されています。
+
+ここから [ver1](https://github.com/oiax/tamachi_vue/tree/ver1), [ver2](https://github.com/oiax/tamachi_vue/tree/ver2), [ver3](https://github.com/oiax/tamachi_vue/tree/ver3), [ver4](https://github.com/oiax/tamachi_vue/tree/ver4) とソースコードの変化を追いかければ、本稿の内容をより深く理解できるでしょう。
