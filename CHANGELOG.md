@@ -45,3 +45,12 @@ tamachi_vue CHANGELOG
 * `vue_form_with` から `local: true` オプションを除去。
 
 ここでタグ `ver4` をセット。完成。
+
+## Webpacker 2.0 への対応
+
+* `bundle update` を実行。
+* `bundle exec rails webpacker:install` を実行。
+* 以下のファイルを削除。
+  * config/webpack/paths.yml
+  * config/webpack/development.server.yml
+  * config/webpack/development.server.js
